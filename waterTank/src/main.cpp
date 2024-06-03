@@ -38,7 +38,7 @@ void moveOneStep(bool forward) {
     out != 0x08 ? out = out << 1 : out = 0x01;
   } 
   else {
-    out != 0x01 ? out = out >> 1 : out = 0x01;
+    out != 0x01 ? out = out >> 1 : out = 0x08;
   }
   for (int i=0; i<4; i++) {
     int value = (out & (0x01 << i)) ? HIGH : LOW;
