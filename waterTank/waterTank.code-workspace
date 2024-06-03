@@ -3,13 +3,6 @@
 		{
 			"name": "waterTank",
 			"path": "."
-		},
-		{
-			"name": "water",
-			"path": "../water"
-		},
-		{
-			"path": "../HelloWorld"
 		}
 	],
 	"settings": {}

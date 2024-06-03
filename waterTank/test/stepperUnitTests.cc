@@ -1,11 +1,11 @@
 #include "Board.h"
 #include "Stepper.h"
+#include "Constants.h"
 
 //#include <limits.h>
 
 #include "gtest/gtest.h"
 
-#define MOTOR_PIN_COUNT 4
 namespace {
 
   class TestBoard : public Board {
