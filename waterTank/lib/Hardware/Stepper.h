@@ -1,9 +1,10 @@
-  #ifndef STEPPER_H
-  #define STEPPER_H
+#ifndef STEPPER_H
+#define STEPPER_H
 
+#include "IStepper.h"
 #include "Board.h"
 
-class Stepper {
+class Stepper : public IStepper {
 private:
     int _pinCount;
     int* _pins;
@@ -11,7 +12,7 @@ private:
     int _out;
 public:
     Stepper(int, Board*);
-    void step(bool = true);
+    void step(bool = true) override;
 };
 
 #endif

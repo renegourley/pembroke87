@@ -1,8 +1,8 @@
+#include <iostream>
 #include "Board.h"
 #include "Stepper.h"
 #include "Constants.h"
 
-//#include <limits.h>
 
 #include "gtest/gtest.h"
 
@@ -33,7 +33,6 @@ namespace {
 
 TEST(TestStepper, Initialize) {
   TestBoard board;
-
   Stepper stepper(4,&board);
 
   for(int i=0; i<4; i++)
