@@ -1,13 +1,13 @@
-#include "StepperFloat.h"
+#include "LinearActuator.h"
 
 #include "Constants.h"
 
-StepperFloat::StepperFloat(IStepper* stepperPtr){
+LinearActuator::LinearActuator(IStepper* stepperPtr){
     _stepperPtr = stepperPtr;
     for (int i=0;i<STEPPER_MAX_STEPS;i++)
         _stepperPtr->step(true);
 }
 
-void StepperFloat::tick() {
+void LinearActuator::tick() {
     
 }

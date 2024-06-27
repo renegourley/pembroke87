@@ -1,17 +1,17 @@
-#ifndef STEPPERFLOAT_H
-#define STEPPERFLOAT_H
+#ifndef LINEARACTUATOR_H
+#define LINEARACTUATOR_H
 
 #include "WaterGauge.h"
 #include "IStepper.h"
 
-class StepperFloat : public WaterGauge {
+class LinearActuator : public WaterGauge {
 
 private:
     IStepper* _stepperPtr = 0;
     int _level = 0;
 
 public:
-    StepperFloat(IStepper* stepperPtr);
+    LinearActuator(IStepper* stepperPtr);
     void tick();
 };
 

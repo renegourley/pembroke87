@@ -1,7 +1,7 @@
 #include <iostream>
 #include "Constants.h"
 #include "IStepper.h"
-#include "StepperFloat.h"
+#include "LinearActuator.h"
 
 #include "gtest/gtest.h"
 
@@ -26,21 +26,21 @@ public:
 
 };
 
-TEST(StepperFloatTests, InitializeNonEmptyShouldGoBeyondTop) {
+TEST(LinearActuatorTests, InitializeNonEmptyShouldGoBeyondTop) {
     TestStepper stepper(1);
-    StepperFloat stepperFloat(&stepper);
+    LinearActuator stepperFloat(&stepper);
     EXPECT_EQ(STEPPER_MAX_STEPS+1,stepper.getTotalSteps());
 }
 
-TEST(StepperFloatTests, InitializeEmptyShouldGoToTop) {
+TEST(LinearActuatorTests, InitializeEmptyShouldGoToTop) {
     TestStepper stepper(0);
-    StepperFloat stepperFloat(&stepper);
+    LinearActuator stepperFloat(&stepper);
     EXPECT_EQ(STEPPER_MAX_STEPS,stepper.getTotalSteps());
 }
 
-TEST(StepperFloatTests, ShouldNotChangeOnceAtTop) {
+TEST(LinearActuatorTests, ShouldNotChangeOnceAtTop) {
     TestStepper stepper(STEPPER_MAX_STEPS);
-    StepperFloat stepperFloat(&stepper);
+    LinearActuator stepperFloat(&stepper);
     int expectedValue = stepper.getTotalSteps();
     stepperFloat.tick();
     EXPECT_EQ(expectedValue,stepper.getTotalSteps());
