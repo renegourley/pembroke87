@@ -12,6 +12,7 @@ private:
 
 public:
     LinearActuator(IStepper* stepperPtr);
+    void initialize();
     void tick();
 };
 

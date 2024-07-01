@@ -29,18 +29,21 @@ public:
 TEST(LinearActuatorTests, InitializeNonEmptyShouldGoBeyondTop) {
     TestStepper stepper(1);
     LinearActuator stepperFloat(&stepper);
+    stepperFloat.initialize();
     EXPECT_EQ(STEPPER_MAX_STEPS+1,stepper.getTotalSteps());
 }
 
 TEST(LinearActuatorTests, InitializeEmptyShouldGoToTop) {
     TestStepper stepper(0);
     LinearActuator stepperFloat(&stepper);
+    stepperFloat.initialize();
     EXPECT_EQ(STEPPER_MAX_STEPS,stepper.getTotalSteps());
 }
 
 TEST(LinearActuatorTests, ShouldNotChangeOnceAtTop) {
     TestStepper stepper(STEPPER_MAX_STEPS);
     LinearActuator stepperFloat(&stepper);
+    stepperFloat.initialize();
     int expectedValue = stepper.getTotalSteps();
     stepperFloat.tick();
     EXPECT_EQ(expectedValue,stepper.getTotalSteps());
