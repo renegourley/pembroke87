@@ -8,12 +8,12 @@ class LinearActuator : public WaterGauge {
 
 private:
     IStepper* _stepperPtr = 0;
-    int _level = 0;
 
 public:
     LinearActuator(IStepper* stepperPtr);
     void initialize();
-    void tick();
+    virtual void forward();
+    void backward();
 };
 
 #endif

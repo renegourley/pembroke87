@@ -11,6 +11,10 @@ void LinearActuator::initialize() {
         _stepperPtr->step(true);
 }
 
-void LinearActuator::tick() {
-    
+void LinearActuator::forward() {
+    _stepperPtr->step(true);
+}
+
+void LinearActuator::backward() {
+    _stepperPtr->step(false);
 }

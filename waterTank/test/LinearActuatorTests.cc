@@ -1,7 +1,9 @@
 #include <iostream>
 #include "Constants.h"
 #include "IStepper.h"
+#include "ISwitch.h"
 #include "LinearActuator.h"
+#include "LimitedLinearActuator.h"
 
 #include "gtest/gtest.h"
 
@@ -26,27 +28,81 @@ public:
 
 };
 
+class TestSwitch : public ISwitch {
+private:
+    bool _isClosed;
+public:
+    TestSwitch(bool isClosed) : ISwitch() {
+        _isClosed = isClosed;
+    };
+    bool isOpen() override {
+        return !_isClosed;
+    };
+    bool isClosed() override {
+        return _isClosed;
+    };
+    void toggle() {
+        _isClosed = !_isClosed;
+    }
+};
+
 TEST(LinearActuatorTests, InitializeNonEmptyShouldGoBeyondTop) {
     TestStepper stepper(1);
-    LinearActuator stepperFloat(&stepper);
-    stepperFloat.initialize();
+    LinearActuator linearActuator(&stepper);
+    linearActuator.initialize();
     EXPECT_EQ(STEPPER_MAX_STEPS+1,stepper.getTotalSteps());
 }
 
 TEST(LinearActuatorTests, InitializeEmptyShouldGoToTop) {
     TestStepper stepper(0);
-    LinearActuator stepperFloat(&stepper);
-    stepperFloat.initialize();
+    LinearActuator linearActuator(&stepper);
+    linearActuator.initialize();
     EXPECT_EQ(STEPPER_MAX_STEPS,stepper.getTotalSteps());
 }
 
-TEST(LinearActuatorTests, ShouldNotChangeOnceAtTop) {
+TEST(LinearActuatorTests, ShouldGoForward) {
     TestStepper stepper(STEPPER_MAX_STEPS);
-    LinearActuator stepperFloat(&stepper);
-    stepperFloat.initialize();
-    int expectedValue = stepper.getTotalSteps();
-    stepperFloat.tick();
+    LinearActuator linearActuator(&stepper);
+    int expectedValue = stepper.getTotalSteps() + 1;
+    linearActuator.forward();
     EXPECT_EQ(expectedValue,stepper.getTotalSteps());
 }
 
+TEST(LinearActuatorTests, ShouldGoBackward) {
+    TestStepper stepper(STEPPER_MAX_STEPS);
+    LinearActuator linearActuator(&stepper);
+    int expectedValue = stepper.getTotalSteps() - 1;
+    linearActuator.backward();
+    EXPECT_EQ(expectedValue,stepper.getTotalSteps());
+}
 
+TEST(LinearActuatorTests, ShouldNotProgressIfLimitClosed) {
+    TestStepper stepper(10);
+    TestSwitch limitSwitch(true);
+    LimitedLinearActuator linearActuator(&stepper,&limitSwitch);
+    int expectedValue = stepper.getTotalSteps();
+    linearActuator.forward();
+    linearActuator.forward();
+    EXPECT_EQ(expectedValue,stepper.getTotalSteps());
+}
+
+TEST(LinearActuatorTests, ShouldProgressIfLimitOpen) {
+    TestStepper stepper(10);
+    TestSwitch limitSwitch(false);
+    LimitedLinearActuator linearActuator(&stepper,&limitSwitch);
+    int expectedValue = stepper.getTotalSteps() + 2;
+    linearActuator.forward();
+    linearActuator.forward();
+    EXPECT_EQ(expectedValue,stepper.getTotalSteps());
+}
+
+TEST(LinearActuatorTests, ShouldRegressRegardlessOfLimit) {
+    TestStepper stepper(10);
+    TestSwitch limitSwitch(false);
+    LimitedLinearActuator linearActuator(&stepper,&limitSwitch);
+    int expectedValue = stepper.getTotalSteps() - 2;
+    linearActuator.backward();
+    limitSwitch.toggle();
+    linearActuator.backward();
+    EXPECT_EQ(expectedValue,stepper.getTotalSteps());
+}
