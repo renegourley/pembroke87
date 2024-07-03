@@ -1,10 +1,10 @@
 #ifndef LINEARACTUATOR_H
 #define LINEARACTUATOR_H
 
-#include "WaterGauge.h"
+#include "ILinearActuator.h"
 #include "IStepper.h"
 
-class LinearActuator : public WaterGauge {
+class LinearActuator : public ILinearActuator {
 
 private:
     IStepper* _stepperPtr = 0;

@@ -2,7 +2,7 @@
 
 #include "Constants.h"
 
-LinearActuator::LinearActuator(IStepper* stepperPtr){
+LinearActuator::LinearActuator(IStepper* stepperPtr) : ILinearActuator() {
     _stepperPtr = stepperPtr;
 }
 
