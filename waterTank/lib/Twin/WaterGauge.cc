@@ -1,4 +1,5 @@
 #include "LimitedLinearActuator.h"
+#include "Constants.h"
 
 #include "WaterGauge.h"
 
@@ -18,9 +19,15 @@ void WaterGauge::tick(bool valveOpen) {
     if (valveOpen && _waterLevel > 0) {
         _actuatorPtr->backward();
         _waterLevel -= 1;
+        _fillStep = 0;
     }
     if (!valveOpen && _waterLevel < _actuatorLength) {
-        _actuatorPtr->forward();
-        _waterLevel += 1;
+        if (FILL_TO_EMPTY_RATIO == _fillStep) {
+            _actuatorPtr->forward();
+            _waterLevel += 1;
+            _fillStep = 0;
+        } else {
+            _fillStep += 1;
+        }
     }
 }

@@ -1,5 +1,6 @@
 #include "ILinearActuator.h"
 #include "WaterGauge.h"
+#include "Constants.h"
 
 #include "gtest/gtest.h"
 
@@ -56,8 +57,8 @@ TEST(WaterGaugeTests, Tick_ShouldNotGoPastFull) {
     WaterGauge gauge(&actuator, 100);
     gauge.initialize();
     gauge.tick(true);
-    gauge.tick(false);
-    gauge.tick(false);
+    for (int i=0; i<100; i++)
+        gauge.tick(false);
     EXPECT_EQ(100,actuator.getPosition());
 }
 
@@ -67,6 +68,22 @@ TEST(WaterGaugeTests, Tick_ShouldGoUp) {
     gauge.initialize();
     gauge.tick(true);
     gauge.tick(true);
-    gauge.tick(false);
-    EXPECT_EQ(99,actuator.getPosition());
+    for (int i=0; i<100; i++)
+        gauge.tick(false);
+    EXPECT_EQ(100,actuator.getPosition());
+}
+
+TEST(WaterGaugeTests, Tick_ShouldGoDownFasterThanUp) {
+    TestActuator actuator(0);
+    WaterGauge gauge(&actuator,100);
+    gauge.initialize();
+    for (int i=0;i<FILL_TO_EMPTY_RATIO;i++) {
+        gauge.tick(true);
+    }
+    int startPosition = actuator.getPosition();
+    gauge.tick(true);
+    for (int i=0;i<=FILL_TO_EMPTY_RATIO;i++) {
+        gauge.tick(false);
+    }
+    EXPECT_EQ(startPosition,actuator.getPosition());
 }
