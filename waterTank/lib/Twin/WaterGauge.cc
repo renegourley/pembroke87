@@ -31,3 +31,7 @@ void WaterGauge::tick(bool valveOpen) {
         }
     }
 }
+
+bool WaterGauge::isEmpty() {
+    return 0 == _waterLevel;
+}

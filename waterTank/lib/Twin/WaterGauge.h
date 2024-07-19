@@ -1,5 +1,5 @@
-#ifndef TOWERFLOAT_H
-#define TOWERFLOAT_H
+#ifndef WATERGAUGE_H
+#define WATERGAUGE_H
 
 #include "ILinearActuator.h"
 
@@ -13,6 +13,7 @@ public:
     WaterGauge(ILinearActuator* actuatorPtr, int actuatorLength);
     void initialize();
     void tick(bool valveOpen);
+    bool isEmpty();
 };
 
 #endif

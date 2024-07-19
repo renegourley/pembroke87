@@ -31,6 +31,7 @@ TEST(WaterGaugeTests, Initialize_ShouldGoForward) {
     TestActuator actuator(0);
     WaterGauge gauge(&actuator, actuatorSteps);
     gauge.initialize();
+    EXPECT_FALSE(gauge.isEmpty());
     EXPECT_EQ(actuatorSteps,actuator.getPosition());
 }
 
@@ -39,6 +40,7 @@ TEST(WaterGaugeTests, Tick_ShouldGoDownWhenOpen) {
     WaterGauge gauge(&actuator, 2);
     gauge.initialize();
     gauge.tick(true);
+    EXPECT_FALSE(gauge.isEmpty());
     EXPECT_EQ(1,actuator.getPosition());
 }
 
@@ -49,6 +51,7 @@ TEST(WaterGaugeTests, Tick_ShouldNotGoPastEmpty) {
     gauge.tick(true);
     gauge.tick(true);
     gauge.tick(true);
+    EXPECT_TRUE(gauge.isEmpty());
     EXPECT_EQ(0,actuator.getPosition());
 }
 
