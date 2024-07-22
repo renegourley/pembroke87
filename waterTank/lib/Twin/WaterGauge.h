@@ -1,9 +1,10 @@
 #ifndef WATERGAUGE_H
 #define WATERGAUGE_H
 
+#include "IWaterGauge.h"
 #include "ILinearActuator.h"
 
-class WaterGauge {
+class WaterGauge : public IWaterGauge {
 private:
     int _waterLevel;
     int _actuatorLength;

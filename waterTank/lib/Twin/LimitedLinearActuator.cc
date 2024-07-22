@@ -8,7 +8,7 @@ LimitedLinearActuator::LimitedLinearActuator(IStepper* stepperPtr, ISwitch* limi
 };
 
 void LimitedLinearActuator::forward() {
-    if (_limitSwitchPtr->isOpen()) {
+    if (!_limitSwitchPtr->isClosed()) {
         LinearActuator::forward();
     }
 };

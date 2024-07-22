@@ -26,7 +26,7 @@ void OutflowPipe::start() {
     _isPlaying = true;
     for (int i=0;i<=_volumeSteps;i++) {
         setVolume(_maxVolume*i/_volumeSteps);
-        _boardPtr->delay(_delay);
+        _boardPtr->delayMilliseconds(_delay);
     }
 }
 
@@ -35,7 +35,7 @@ void OutflowPipe::stop() {
 
     for (int i=_volumeSteps;i>=0;i--) {
         setVolume(_maxVolume*i/_volumeSteps);
-        _boardPtr->delay(_delay);
+        _boardPtr->delayMilliseconds(_delay);
     }
     _boardPtr->mp3Stop();
     _isPlaying = false;

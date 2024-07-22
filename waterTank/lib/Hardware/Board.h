@@ -13,7 +13,9 @@ public:
     virtual void mp3Play(uint track);
     virtual void mp3Stop();
     virtual void mp3Volume(uint level);
-    virtual void delay(int milliseconds);
+    virtual bool valveSwitchIsClosed();
+    virtual bool limitSwitchIsClosed();
+    virtual void delayMilliseconds(int milliseconds);
     virtual unsigned long millisecondsSinceBoot();
 };
 

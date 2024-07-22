@@ -35,9 +35,6 @@ public:
     TestSwitch(bool isClosed) : ISwitch() {
         _isClosed = isClosed;
     };
-    bool isOpen() override {
-        return !_isClosed;
-    };
     bool isClosed() override {
         return _isClosed;
     };

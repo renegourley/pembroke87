@@ -3,52 +3,89 @@
 #include <DFRobotDFPlayerMini.h>
 #include "ESPBoard.h"
 #include "Stepper.h"
+#include "LimitSwitch.h"
+#include "ValveSwitch.h"
+#include "LimitedLinearActuator.h"
+#include "WaterGauge.h"
+#include "OutflowPipe.h"
+#include "WaterTower.h"
 
 void moveSteps(bool,int,int);
-void moveOneStep(bool);
+//void moveOneStep(bool);
 
 static const uint8_t PIN_MP3_TX = 17; // Connects to module's RX 
 static const uint8_t PIN_MP3_RX = 16; // Connects to module's TX 
-
-// const int onboardLedPin = 2;
-// const int betweenStepMs = 10;
-// const int delayMs = 500;
-// const int stepCount = 4*60;
-
-ESPBoard* espBoardPtr;
-//Stepper* stepperPtr;
-
 int motorPorts[] = {26,25,33,32};
 
-void setup() {
+static const uint8_t PIN_LIMIT_SWITCH = 36;
+static const uint8_t PIN_VALVE_SWITCH = 34;
 
+const int onboardLedPin = 2;
+const int betweenStepMs = 10;
+const int delayMs = 500;
+const int stepCount = 4*60;
+
+//Stepper* stepperPtr;
+
+
+WaterTower* waterTower;
+ValveSwitch* valveSwitch;
+ESPBoard* board;
+//Stepper* stepper;
+//LimitedLinearActuator* linearActuator;
+
+void setup() {
   // Init USB serial port for debugging
   Serial.begin(9600);
   Serial.println("Starting...............");
 
+  board = new ESPBoard();
+  board->setupLimitSwitchInput(PIN_LIMIT_SWITCH);
+  board->setupValveSwitchInput(PIN_VALVE_SWITCH);
+  board->setupMotor(motorPorts);
+
+  pinMode(onboardLedPin,OUTPUT);
+
   try {
-    espBoardPtr = new ESPBoard(motorPorts, PIN_MP3_TX, PIN_MP3_RX);
-    Serial.println("OK");
-    espBoardPtr->mp3Volume(10);
-    espBoardPtr->mp3Play(1);
+    board->setupMp3(PIN_MP3_TX,PIN_MP3_RX);
   } 
   catch(char* message) {
-    Serial.print("Failed to start: ");
+    Serial.print("Failed to start Mp3: ");
     Serial.println(message);
   }
+
+  LimitSwitch* limitSwitch = new LimitSwitch(board);
+  Stepper* stepper = new Stepper(4, board);
+  LimitedLinearActuator* linearActuator = new LimitedLinearActuator(stepper,limitSwitch);
+  WaterGauge* waterGauge = new WaterGauge(linearActuator, STEPPER_MAX_STEPS);
+  valveSwitch = new ValveSwitch(board);
+  // ValveSwitch* valveSwitch = new ValveSwitch(board);
+  OutflowPipe* outflowPipe = new OutflowPipe(board, 10, 5, 50, 100);
+  waterTower = new WaterTower(waterGauge, valveSwitch, outflowPipe);
+  waterTower->initialize();
 }
 
+// static const int delayMs = 100;
 void loop() {
-//  delay(delayMs);
-//  moveSteps(true,stepCount,betweenStepMs);
-//  delay(delayMs);
-//  moveSteps(false,stepCount,betweenStepMs);
+
+  if (valveSwitch->isClosed()) {
+    digitalWrite(onboardLedPin,HIGH);
+  } else {
+    digitalWrite(onboardLedPin,LOW);
+  }
+
+  waterTower->tick();
+  delay(delayMs);
+
+  // moveSteps(true,stepCount,betweenStepMs);
+  // delay(delayMs);
+  // moveSteps(false,stepCount,betweenStepMs);
 
 }
 
 // void moveSteps(bool forward,int steps,int ms) {
 //   for (int i=0; i<steps; i++) {
-//     stepperPtr->step(forward);
+//     (forward) ? linearActuator->forward() : linearActuator->backward();
 //     delay(ms);
 //   }
 // }
