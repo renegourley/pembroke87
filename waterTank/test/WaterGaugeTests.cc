@@ -1,6 +1,7 @@
 #include "ILinearActuator.h"
 #include "WaterGauge.h"
 #include "Constants.h"
+#include "Board.h"
 
 #include "gtest/gtest.h"
 
@@ -29,7 +30,8 @@ public:
 
 TEST(WaterGaugeTests, Initialize_ShouldGoForward) {
     TestActuator actuator(0);
-    WaterGauge gauge(&actuator, actuatorSteps);
+    Board board;
+    WaterGauge gauge(&board, &actuator, actuatorSteps);
     gauge.initialize();
     EXPECT_FALSE(gauge.isEmpty());
     EXPECT_EQ(actuatorSteps,actuator.getPosition());
@@ -37,7 +39,8 @@ TEST(WaterGaugeTests, Initialize_ShouldGoForward) {
 
 TEST(WaterGaugeTests, Tick_ShouldGoDownWhenOpen) {
     TestActuator actuator(0);
-    WaterGauge gauge(&actuator, 2);
+    Board board;
+    WaterGauge gauge(&board, &actuator, 2);
     gauge.initialize();
     gauge.tick(true);
     EXPECT_FALSE(gauge.isEmpty());
@@ -46,7 +49,8 @@ TEST(WaterGaugeTests, Tick_ShouldGoDownWhenOpen) {
 
 TEST(WaterGaugeTests, Tick_ShouldNotGoPastEmpty) {
     TestActuator actuator(0);
-    WaterGauge gauge(&actuator, 1);
+    Board board;
+    WaterGauge gauge(&board, &actuator, 1);
     gauge.initialize();
     gauge.tick(true);
     gauge.tick(true);
@@ -57,7 +61,8 @@ TEST(WaterGaugeTests, Tick_ShouldNotGoPastEmpty) {
 
 TEST(WaterGaugeTests, Tick_ShouldNotGoPastFull) {
     TestActuator actuator(0);
-    WaterGauge gauge(&actuator, 100);
+    Board board;
+    WaterGauge gauge(&board, &actuator, 100);
     gauge.initialize();
     gauge.tick(true);
     for (int i=0; i<100; i++)
@@ -67,7 +72,8 @@ TEST(WaterGaugeTests, Tick_ShouldNotGoPastFull) {
 
 TEST(WaterGaugeTests, Tick_ShouldGoUp) {
     TestActuator actuator(0);
-    WaterGauge gauge(&actuator, 100);
+    Board board;
+    WaterGauge gauge(&board, &actuator, 100);
     gauge.initialize();
     gauge.tick(true);
     gauge.tick(true);
@@ -78,7 +84,8 @@ TEST(WaterGaugeTests, Tick_ShouldGoUp) {
 
 TEST(WaterGaugeTests, Tick_ShouldGoDownFasterThanUp) {
     TestActuator actuator(0);
-    WaterGauge gauge(&actuator,100);
+    Board board;
+    WaterGauge gauge(&board, &actuator,100);
     gauge.initialize();
     for (int i=0;i<FILL_TO_EMPTY_RATIO;i++) {
         gauge.tick(true);

@@ -11,7 +11,7 @@
 #include "WaterTower.h"
 
 void moveSteps(bool,int,int);
-//void moveOneStep(bool);
+// void moveOneStep(bool);
 
 static const uint8_t PIN_MP3_TX = 17; // Connects to module's RX 
 static const uint8_t PIN_MP3_RX = 16; // Connects to module's TX 
@@ -30,7 +30,10 @@ const int stepCount = 4*60;
 
 WaterTower* waterTower;
 ValveSwitch* valveSwitch;
+LimitSwitch* limitSwitch;
 ESPBoard* board;
+LinearActuator* linearActuator;
+WaterGauge* waterGauge;
 //Stepper* stepper;
 //LimitedLinearActuator* linearActuator;
 
@@ -54,25 +57,44 @@ void setup() {
     Serial.println(message);
   }
 
-  LimitSwitch* limitSwitch = new LimitSwitch(board);
+  limitSwitch = new LimitSwitch(board);
   Stepper* stepper = new Stepper(4, board);
-  LimitedLinearActuator* linearActuator = new LimitedLinearActuator(stepper,limitSwitch);
-  WaterGauge* waterGauge = new WaterGauge(linearActuator, STEPPER_MAX_STEPS);
+  //linearActuator = new LinearActuator(stepper);
+  linearActuator = new LimitedLinearActuator(stepper,limitSwitch);
+  // LimitedLinearActuator* linearActuator = new LimitedLinearActuator(stepper,limitSwitch);
+  waterGauge = new WaterGauge(board, linearActuator, STEPPER_MAX_STEPS);
   valveSwitch = new ValveSwitch(board);
   // ValveSwitch* valveSwitch = new ValveSwitch(board);
   OutflowPipe* outflowPipe = new OutflowPipe(board, 10, 5, 50, 100);
   waterTower = new WaterTower(waterGauge, valveSwitch, outflowPipe);
-  waterTower->initialize();
+  Serial.println("initializing...");
+  waterGauge->initialize();
+  //waterTower->initialize();
+  Serial.println("finished");
+
+  // delay(delayMs);
+
+  // moveSteps(true,stepCount,betweenStepMs);
+  // delay(delayMs);
+  // moveSteps(false,stepCount,betweenStepMs);
+
 }
 
+bool initialized = false;
 // static const int delayMs = 100;
 void loop() {
 
-  if (valveSwitch->isClosed()) {
-    digitalWrite(onboardLedPin,HIGH);
-  } else {
-    digitalWrite(onboardLedPin,LOW);
-  }
+  // if (!initialized) {
+  //   waterTower->initialize();
+  //   for (int i=0;i<STEPPER_MAX_STEPS;i++) linearActuator->forward();
+  //   initialized=true;
+  // } 
+
+  // if (limitSwitch->isClosed()) {
+  //   digitalWrite(onboardLedPin,HIGH);
+  // } else {
+  //   digitalWrite(onboardLedPin,LOW);
+  // }
 
   waterTower->tick();
   delay(delayMs);
@@ -83,9 +105,10 @@ void loop() {
 
 }
 
-// void moveSteps(bool forward,int steps,int ms) {
-//   for (int i=0; i<steps; i++) {
-//     (forward) ? linearActuator->forward() : linearActuator->backward();
-//     delay(ms);
-//   }
-// }
+void moveSteps(bool forward,int steps,int ms) {
+  for (int i=0; i<steps; i++) {
+    (forward) ? waterGauge->tick(false) : waterGauge->tick(true);
+    // (forward) ? linearActuator->forward() : linearActuator->backward();
+    delay(ms);
+  }
+}

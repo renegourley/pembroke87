@@ -34,7 +34,7 @@ TEST(IntegrationTests, InitializeDoesNotMoveIfLimitSwitchClosed) {
   LimitSwitch limitSwitch(&board);
   Stepper stepper(4, &board);
   LimitedLinearActuator linearActuator(&stepper,&limitSwitch);
-  WaterGauge waterGauge(&linearActuator, 10);
+  WaterGauge waterGauge(&board, &linearActuator, 10);
   ValveSwitch valveSwitch(&board);
   OutflowPipe outflowPipe(&board, 10, 5, 50, 100);
   WaterTower waterTower(&waterGauge, &valveSwitch, &outflowPipe);
@@ -50,7 +50,7 @@ TEST(IntegrationTests, InitializeGoesToTopAndSilent) {
   LimitSwitch limitSwitch(&board);
   Stepper stepper(4, &board);
   LimitedLinearActuator linearActuator(&stepper,&limitSwitch);
-  WaterGauge waterGauge(&linearActuator, 10);
+  WaterGauge waterGauge(&board, &linearActuator, 10);
   ValveSwitch valveSwitch(&board);
   OutflowPipe outflowPipe(&board, 10, 5, 50, 100);
   WaterTower waterTower(&waterGauge, &valveSwitch, &outflowPipe);
@@ -64,7 +64,7 @@ TEST(IntegrationTests, TickMovesActuatorAndPlaySoundWhenValveSwitchClosed) {
   LimitSwitch limitSwitch(&board);
   Stepper stepper(4, &board);
   LimitedLinearActuator linearActuator(&stepper,&limitSwitch);
-  WaterGauge waterGauge(&linearActuator, 10);
+  WaterGauge waterGauge(&board, &linearActuator, 10);
   ValveSwitch valveSwitch(&board);
   OutflowPipe outflowPipe(&board, 10, 5, 50, 100);
   WaterTower waterTower(&waterGauge, &valveSwitch, &outflowPipe);

@@ -1,16 +1,19 @@
 #include "LimitedLinearActuator.h"
 #include "Constants.h"
+#include "Board.h"
 
 #include "WaterGauge.h"
 
-WaterGauge::WaterGauge(ILinearActuator* actuatorPtr, int actuatorLength) {
+WaterGauge::WaterGauge(Board* boardPtr, ILinearActuator* actuatorPtr, int actuatorLength) {
     _actuatorLength = actuatorLength;
     _actuatorPtr = actuatorPtr;
+    _boardPtr = boardPtr;
 }
 
 void WaterGauge::initialize() {
     for (int i=0;i<_actuatorLength;i++) {
         _actuatorPtr->forward();
+        _boardPtr->delayMilliseconds(10);
     }
     _waterLevel = _actuatorLength;
 }
