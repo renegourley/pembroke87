@@ -13,6 +13,7 @@ private:
 public:
     Stepper(int, Board*);
     void step(bool = true) override;
+    void turnOff() override;
 };
 
 #endif

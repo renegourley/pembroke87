@@ -12,6 +12,8 @@ class TestStepper : public IStepper {
 private:
     int _stepSum;
 public:
+    bool _isOff = false;
+
     TestStepper(int initialLevel) : IStepper() {
         printf("initializing testStepper\n");
         _stepSum = initialLevel;
@@ -21,6 +23,10 @@ public:
         printf("step");
         _stepSum += (forward) ? 1 : -1;
     };
+
+    void turnOff() override {
+        _isOff = true;
+    }
 
     int getTotalSteps(){
         return _stepSum;
@@ -81,6 +87,7 @@ TEST(LinearActuatorTests, ShouldNotProgressIfLimitClosed) {
     linearActuator.forward();
     linearActuator.forward();
     EXPECT_EQ(expectedValue,stepper.getTotalSteps());
+    EXPECT_TRUE(stepper._isOff);
 }
 
 TEST(LinearActuatorTests, ShouldProgressIfLimitOpen) {

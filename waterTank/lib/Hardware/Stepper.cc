@@ -25,3 +25,8 @@ void Stepper::step(bool forward) {
     }
     _boardPtr->writeMotor(pins);
 }
+
+void Stepper::turnOff() {
+    int pins[] = {0,0,0,0};
+    _boardPtr->writeMotor(pins);
+}

@@ -11,4 +11,7 @@ void LimitedLinearActuator::forward() {
     if (!_limitSwitchPtr->isClosed()) {
         LinearActuator::forward();
     }
+    else {
+        _stepperPtr->turnOff();
+    }
 };

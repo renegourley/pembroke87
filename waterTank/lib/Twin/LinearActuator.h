@@ -6,7 +6,7 @@
 
 class LinearActuator : public ILinearActuator {
 
-private:
+protected:
     IStepper* _stepperPtr = 0;
 
 public:

@@ -13,7 +13,7 @@ WaterGauge::WaterGauge(Board* boardPtr, ILinearActuator* actuatorPtr, int actuat
 void WaterGauge::initialize() {
     for (int i=0;i<_actuatorLength;i++) {
         _actuatorPtr->forward();
-        _boardPtr->delayMilliseconds(10);
+        _boardPtr->delayMilliseconds(10 );
     }
     _waterLevel = _actuatorLength;
 }

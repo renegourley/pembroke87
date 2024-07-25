@@ -4,6 +4,7 @@
 class IStepper {
 public:
     virtual void step(bool = true) {};
+    virtual void turnOff() {};
 };
 
 #endif

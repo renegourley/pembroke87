@@ -82,6 +82,15 @@ TEST(TestStepper, BackwardSteps) {
   }
 }
 
+TEST(TestStepper, TurnOff) {
+  TestBoard board;
+  Stepper stepper(4,&board);
+  stepper.step();
+  stepper.turnOff();
+  int compareValues[] = {0,0,0,0};
+  compareMotor(compareValues,&board);
+}
+
 }  // namespace
 
 // Step 3. Call RUN_ALL_TESTS() in main().

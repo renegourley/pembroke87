@@ -20,7 +20,10 @@ public:
     bool _valveSwitchIsClosed = false;
     bool _limitSwitchIsClosed = false;
 
-    void writeMotor(int pinValues[]) { _motorWriteCount += 1; };
+    void writeMotor(int pinValues[]) { 
+      // do not record a write if the motor is getting turned off
+      _motorWriteCount += (pinValues[0]+pinValues[1]+pinValues[2]+pinValues[3]); 
+    };
     void mp3Play(uint track) { _isPlaying = true; };
     void mp3Stop() { _isPlaying = false; };
     void mp3Volume(uint level) {};
@@ -39,9 +42,11 @@ TEST(IntegrationTests, InitializeDoesNotMoveIfLimitSwitchClosed) {
   OutflowPipe outflowPipe(&board, 10, 5, 50, 100);
   WaterTower waterTower(&waterGauge, &valveSwitch, &outflowPipe);
   board._limitSwitchIsClosed = true;
-  EXPECT_EQ(1,board._motorWriteCount); // Stepper initialization
+  printf("before first comparison %d\n", board._motorWriteCount);
+  EXPECT_EQ(0,board._motorWriteCount); 
   waterTower.initialize();
-  EXPECT_EQ(1,board._motorWriteCount);
+  printf("before second comparison %d\n", board._motorWriteCount);
+  EXPECT_EQ(0,board._motorWriteCount);
   EXPECT_FALSE(board._isPlaying);
 }
 
@@ -55,7 +60,7 @@ TEST(IntegrationTests, InitializeGoesToTopAndSilent) {
   OutflowPipe outflowPipe(&board, 10, 5, 50, 100);
   WaterTower waterTower(&waterGauge, &valveSwitch, &outflowPipe);
   waterTower.initialize();
-  EXPECT_EQ(11,board._motorWriteCount); // Stepper initialization
+  EXPECT_EQ(10,board._motorWriteCount); // Stepper initialization
   EXPECT_FALSE(board._isPlaying);
 }
 
@@ -72,7 +77,7 @@ TEST(IntegrationTests, TickMovesActuatorAndPlaySoundWhenValveSwitchClosed) {
   waterTower.initialize();
   board._valveSwitchIsClosed = true;
   waterTower.tick();
-  EXPECT_EQ(2,board._motorWriteCount); //Stepper initialization, down
+  EXPECT_EQ(1,board._motorWriteCount); //Stepper initialization, down
   EXPECT_TRUE(board._isPlaying);
   board._limitSwitchIsClosed = false;
   board._valveSwitchIsClosed = false;
@@ -83,6 +88,6 @@ TEST(IntegrationTests, TickMovesActuatorAndPlaySoundWhenValveSwitchClosed) {
   waterTower.tick();
   waterTower.tick();
   waterTower.tick();
-  EXPECT_EQ(3,board._motorWriteCount); //Stepper initialization, down, up
+  EXPECT_EQ(2,board._motorWriteCount); //Stepper initialization, down, up
 }
 
