@@ -42,10 +42,8 @@ TEST(IntegrationTests, InitializeDoesNotMoveIfLimitSwitchClosed) {
   OutflowPipe outflowPipe(&board, 10, 5, 50, 100);
   WaterTower waterTower(&waterGauge, &valveSwitch, &outflowPipe);
   board._limitSwitchIsClosed = true;
-  printf("before first comparison %d\n", board._motorWriteCount);
   EXPECT_EQ(0,board._motorWriteCount); 
   waterTower.initialize();
-  printf("before second comparison %d\n", board._motorWriteCount);
   EXPECT_EQ(0,board._motorWriteCount);
   EXPECT_FALSE(board._isPlaying);
 }
@@ -60,7 +58,7 @@ TEST(IntegrationTests, InitializeGoesToTopAndSilent) {
   OutflowPipe outflowPipe(&board, 10, 5, 50, 100);
   WaterTower waterTower(&waterGauge, &valveSwitch, &outflowPipe);
   waterTower.initialize();
-  EXPECT_EQ(10,board._motorWriteCount); // Stepper initialization
+  EXPECT_EQ(10,board._motorWriteCount); 
   EXPECT_FALSE(board._isPlaying);
 }
 
@@ -77,7 +75,7 @@ TEST(IntegrationTests, TickMovesActuatorAndPlaySoundWhenValveSwitchClosed) {
   waterTower.initialize();
   board._valveSwitchIsClosed = true;
   waterTower.tick();
-  EXPECT_EQ(1,board._motorWriteCount); //Stepper initialization, down
+  EXPECT_EQ(1,board._motorWriteCount); 
   EXPECT_TRUE(board._isPlaying);
   board._limitSwitchIsClosed = false;
   board._valveSwitchIsClosed = false;
@@ -88,6 +86,6 @@ TEST(IntegrationTests, TickMovesActuatorAndPlaySoundWhenValveSwitchClosed) {
   waterTower.tick();
   waterTower.tick();
   waterTower.tick();
-  EXPECT_EQ(2,board._motorWriteCount); //Stepper initialization, down, up
+  EXPECT_EQ(2,board._motorWriteCount); 
 }
 
